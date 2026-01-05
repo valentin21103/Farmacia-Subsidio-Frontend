@@ -1,0 +1,11 @@
+<h2>Lista de Medicamentos Disponibles</h2>
+
+<p *ngIf="lista.length === 0">Cargando medicamentos...</p>
+
+<ul>
+  <li *ngFor="let item of lista">
+    <strong>{{ item.nombre }}</strong> - ${{ item.precio }}
+
+    <button (click)="PedirSubcidio(item.id)" style="margin-left: 10px;"> Solicitar</button>
+    </li>
+</ul>

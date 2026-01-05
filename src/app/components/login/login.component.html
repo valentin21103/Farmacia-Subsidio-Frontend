@@ -1,0 +1,21 @@
+<div class="login-container" style="max-width: 300px; margin: 50px auto; text-align: center;">
+  <h2>Acceso Farmacia</h2>
+
+  <div style="margin-bottom: 10px;">
+    <input type="email" [(ngModel)]="credenciales.email" placeholder="Correo electrónico" 
+           style="width: 100%; padding: 8px;">
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <input type="password" [(ngModel)]="credenciales.password" placeholder="Contraseña" 
+           style="width: 100%; padding: 8px;">
+  </div>
+
+  <p *ngIf="mensajeError" style="color: red; font-size: 0.9em;">
+    {{ mensajeError }}
+  </p>
+
+  <button (click)="IniciarSesion()" style="padding: 10px 20px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px;">
+    Ingresar
+  </button>
+</div>
