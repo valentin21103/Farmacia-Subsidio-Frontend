@@ -1,0 +1,55 @@
+<div class="registro-container">
+  
+  <h2>Crear Cuenta Nueva</h2>
+
+  <form (ngSubmit)="CrearCuenta()">
+    
+    <div class="form-group">
+      <label>Nombre:</label>
+      <input type="text" [(ngModel)]="Usuario.nombre" name="nombre" placeholder="Tu nombre" class="form-input" required>
+    </div>
+
+    <div class="form-group">
+      <label>Apellido:</label>
+      <input type="text" [(ngModel)]="Usuario.apellido" name="apellido" placeholder="Tu apellido" class="form-input" required>
+    </div>
+
+    <div class="form-group">
+      <label>Correo Electrónico:</label>
+      <input type="email" [(ngModel)]="Usuario.correoElectronico" name="email" placeholder="ejemplo@correo.com" class="form-input" required>
+    </div>
+
+    <div class="form-group">
+      <label>Contraseña:</label>
+      <input type="password" [(ngModel)]="Usuario.contrasena" name="password" placeholder="******" class="form-input" required>
+    </div>
+
+    <div class="form-row">
+      
+      <div class="col">
+        <label>Edad:</label>
+        <input type="number" [(ngModel)]="Usuario.edad" name="edad" placeholder="Ej: 25" class="form-input" required>
+      </div>
+
+      <div class="col">
+        <label>Género:</label>
+        <select [(ngModel)]="Usuario.genero" name="genero" class="form-input" required>
+          <option value="" disabled selected>Seleccione...</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button type="button" (click)="Volver()" class="btn btn-secondary">
+        Volver
+      </button>
+
+      <button type="submit" class="btn btn-success">
+        Registrarse
+      </button>
+    </div>
+
+  </form>
+</div>

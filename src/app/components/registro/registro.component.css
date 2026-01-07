@@ -1,0 +1,86 @@
+/* El contenedor principal */
+.registro-container {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #fff; /* Fondo blanco por si acaso */
+}
+
+/* El título */
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Cada bloque de input (div) */
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Las etiquetas (Nombre, Apellido...) */
+label {
+  display: block; /* Para que el label ocupe su propia línea arriba del input */
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Los campos de texto y selects */
+.form-input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box; /* Importante para que el padding no rompa el ancho */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Fila flexible para poner cosas lado a lado (Edad y Género) */
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Columnas flexibles */
+.col {
+  flex: 1;
+}
+
+/* Contenedor de botones */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+/* Estilos base para todos los botones */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s; /* Animación suave al pasar el mouse */
+}
+
+/* Botón Gris (Volver) */
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+.btn-secondary:hover {
+  background-color: #5a6268; /* Un poco más oscuro al pasar el mouse */
+}
+
+/* Botón Verde (Registrarse) */
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+.btn-success:hover {
+  background-color: #218838; /* Un poco más oscuro al pasar el mouse */
+}

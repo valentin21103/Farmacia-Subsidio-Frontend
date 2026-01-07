@@ -3,11 +3,12 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LoginDto } from '../../Interfaces/Login';
 import { UsuarioService } from '../../services/usuario.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -38,8 +39,6 @@ export class LoginComponent {
         localStorage.setItem('usuarioNombre', usuario.nombre);
         localStorage.setItem('usuarioRol', usuario.roll);
 
-        // Mensaje de bienvenida
-        alert(`¡Bienvenido ${usuario.nombre}! Tu rol es: ${usuario.roll}`);
             this.router.navigate(['/inicio']); // SI ACCECEDE A LA CUENTA ENTRA AL INICIO
         // Aquí redirigiremos a la lista de medicamentos (cuando configuremos rutas)
         // this.router.navigate(['/lista-medicamentos']);
