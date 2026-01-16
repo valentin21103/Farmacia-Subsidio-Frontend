@@ -42,7 +42,12 @@ export class LoginComponent {
         // Sin esto, la pantalla de inicio no te deja pasar
         localStorage.setItem('usuarioId', usuario.id.toString()); 
 
-        this.router.navigate(['/inicio']); 
+        if(usuario.roll == "Administrador")
+        {
+          this.router.navigate(['/inicioAdmin']); 
+
+        }
+        else this.router.navigate(['/inicio']); 
       },
       error: (err) => {
         console.error(err);

@@ -1,0 +1,91 @@
+<nav class="admin-nav">
+  <h1>Panel de Administración</h1>
+  <div class="nav-links">
+    <span>Inicio</span>
+    <span>Salir</span>
+  </div>
+</nav>
+
+<div class="admin-grid">
+
+  <section class="panel solicitudes-panel">
+    
+    <div class="panel-header">
+      <h3>Solicitudes Pendientes</h3>
+      <div class="buscador">
+        <input type="text" placeholder="Buscar solicitud..." [(ngModel)]="busquedaSolicitud">
+        <span class="lupa">🔍</span>
+      </div>
+    </div>
+
+    <div class="lista-scroll">
+      
+      <div class="item-solicitud" *ngFor="let sol of solicitudesFiltradas">
+        <div class="datos-solicitud">
+          <span class="dato-med">{{ sol.medicamentoNombre }}</span>
+          <span class="dato-user">👤 {{ sol.usuarioNombre }}</span>
+        </div>
+
+        <div class="botones-accion">
+          <button class="btn-rechazar" (click)="rechazar(sol)" title="Rechazar">✕</button>
+          <button class="btn-aprobar" (click)="aprobar(sol)" title="Aprobar">✓</button>
+        </div>
+      </div>
+
+      <div *ngIf="solicitudesFiltradas.length === 0" class="empty-state">
+        <p>No hay solicitudes pendientes</p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <div class="columna-derecha">
+
+    <section class="panel inventario-panel">
+      
+      <div class="panel-header">
+        <h3>Inventario</h3>
+        <div class="buscador">
+          <input type="text" placeholder="Buscar medicamento..." [(ngModel)]="busquedaInventario">
+          <span class="lupa">🔍</span>
+        </div>
+      </div>
+
+      <div class="lista-scroll">
+        <div class="item-medicamento" *ngFor="let med of inventarioFiltrado">
+          <div class="info-med">
+            <span class="nombre-med">{{ med.nombre }}</span>
+          </div>
+          <button class="btn-trash" (click)="borrarMedicamento(med.id)">🗑️</button>
+        </div>
+      </div>
+
+      <div class="form-overlay" *ngIf="mostrarFormulario">
+        <h4>Nuevo Medicamento</h4>
+        <input type="text" placeholder="Nombre" [(ngModel)]="nuevoMedicamento.nombre">
+        <input type="text" placeholder="Descripción" [(ngModel)]="nuevoMedicamento.descripcion">
+        <div class="inputs-row">
+          <input type="number" placeholder="Precio" [(ngModel)]="nuevoMedicamento.precio">
+          <input type="number" placeholder="Stock" [(ngModel)]="nuevoMedicamento.stock">
+        </div>
+        <button class="btn-guardar" (click)="guardarMedicamento()">Guardar</button>
+      </div>
+
+      <div class="panel-footer">
+        <button class="btn-footer agregar" (click)="toggleFormulario()">
+          {{ mostrarFormulario ? 'Cancelar' : 'Agregar' }}
+        </button>
+        <button class="btn-footer eliminar-fake">Eliminar</button> 
+      </div>
+
+    </section>
+
+    <section class="panel usuarios-panel">
+      <h3>Usuarios</h3>
+      <button class="btn-ver-usuarios">VER TODOS LOS USUARIOS</button>
+    </section>
+
+  </div>
+
+</div>

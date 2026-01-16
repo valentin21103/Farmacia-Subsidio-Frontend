@@ -3,6 +3,7 @@ import { LoginComponent } from './components/login/login.component';
 import { ListaMedicamentosComponent } from './components/lista-medicamentos/lista-medicamentos.component';
 import { RegistroComponent } from './components/registro/registro.component';
 import { BibliotecaMedicamentosComponent } from './components/biblioteca-medicamentos/biblioteca-medicamentos.component';
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 
 export const routes: Routes = [
 
@@ -13,6 +14,8 @@ export const routes: Routes = [
       // 3. Ruta para ver los medicamentos (a donde iremos después de entrar)
         { path: 'inicio', component: ListaMedicamentosComponent },
 
+        {path:  "inicioAdmin", component: AdminDashboardComponent},
+
         {path : 'registro', component: RegistroComponent},
   
         {path: "bibliotecaMedi", component: BibliotecaMedicamentosComponent},
@@ -21,5 +24,6 @@ export const routes: Routes = [
 
          // AGUJERO NEGROOOOOOOO
          { path: '**', redirectTo: '', pathMatch: 'full' }
+
 
 ];
