@@ -30,24 +30,25 @@ export class LoginComponent {
 
 
     IniciarSesion() {
-      this.usuarioService.login(this.credenciales).subscribe({
-        next: (usuario) => {
-          console.log('Login exitoso:', usuario);
+    this.usuarioService.login(this.credenciales).subscribe({
+      next: (usuario) => {
+        console.log('Login exitoso:', usuario);
 
-          // --- GUARDADO DE SEGURIDAD EN EL NAVEGADOR ---
-        // Guardamos el Rol para saber si es Admin o Usuario después
+        // --- GUARDADO DE SEGURIDAD EN EL NAVEGADOR ---
         localStorage.setItem('usuarioNombre', usuario.nombre);
         localStorage.setItem('usuarioRol', usuario.roll);
 
-            this.router.navigate(['/inicio']); // SI ACCECEDE A LA CUENTA ENTRA AL INICIO
-        // Aquí redirigiremos a la lista de medicamentos (cuando configuremos rutas)
-        // this.router.navigate(['/lista-medicamentos']);
+        // 👇 ¡AGREGA ESTA LÍNEA OBLIGATORIAMENTE! 👇
+        // Sin esto, la pantalla de inicio no te deja pasar
+        localStorage.setItem('usuarioId', usuario.id.toString()); 
+
+        this.router.navigate(['/inicio']); 
       },
       error: (err) => {
         console.error(err);
         this.mensajeError = 'Usuario o contraseña incorrecto';
-        }
-      })
-    }
+      }
+    })
+  }
 
 }

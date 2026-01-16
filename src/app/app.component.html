@@ -1,6 +1,31 @@
-<div style="padding: 20px;">
-  <h1>Farmacia Subsidio</h1>
-  <hr>
-  
-  <router-outlet></router-outlet>
+<div class="app-wrapper">
+
+  <nav class="main-navbar">
+    <div class="nav-container">
+      
+      <div class="brand-logo">
+        <div class="cross-icon">✚</div>
+        <div class="brand-text">
+          <span class="text-farmacia">FARMACIA</span>
+          <span class="text-subsidio">SUBSIDIO</span>
+        </div>
+      </div>
+
+      <div class="user-actions">
+        <span class="status-indicator"></span> Sistema Online
+      </div>
+
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="router-container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <p>© 2026 Sistema de Gestión Farmacéutica - Privacidad y Seguridad</p>
+  </footer>
+
 </div>

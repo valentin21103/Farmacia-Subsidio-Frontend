@@ -1,0 +1,46 @@
+<div class="biblioteca-container">
+
+    <header class="biblioteca-header">
+
+        <div class="titulo">
+            <button class="btn-volver" (click)="volver()">Volver</button>
+            <h1>Medicamentos Disponibles</h1>
+        </div>
+
+        <div class="buscador-contenedor">
+            <i class="icono-lupa">🔍</i>
+            <input type="text" placeholder="buscar..."/>
+        </div>
+    </header>
+
+    <div class="lista-header-columns">
+        <span class="col-nombre">Medicamento</span>
+        <span class="col-precio">precio</span>
+        <span class="col-accion">Accion</span>
+    </div>
+
+    <div class="lista-scroll-contenedor">
+
+        <div *ngIf="listaMedicamentos.length === 0" class="mensaje-vacio">
+            <p>Cargando Catalogo...</p>
+        </div>
+
+        <div class="medicamento-card" *ngFor="let med of listaMedicamentos">
+
+            <div class="col-nombre">{{med.nombre}}
+                <p class="descripcion-texto" *ngIf="med.descripcion">
+                    {{med.descripcion}}
+                      </p>
+            </div>
+            <div class="col-precio">{{med.precio}}</div>
+        
+            <div class="col-accion">
+                    <button class="btn-solicitar" (click)="pedirSubsidio(med)">
+                        Solicitar
+                    </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>

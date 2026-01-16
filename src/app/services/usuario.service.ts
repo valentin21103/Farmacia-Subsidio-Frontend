@@ -8,19 +8,16 @@ import { Observable } from 'rxjs';
 })
 export class UsuarioService {
 
-
+  // Asegúrate de que este puerto sea el correcto (donde corre tu Swagger)
   private apiUrl = 'https://localhost:7245/api/Usuario';
 
   constructor(private http: HttpClient) { }
 
-  login(credenciales : LoginDto): Observable<Usuario> {
-    // Llamamos al endpoint /Login que arreglamos en el backend
-    return this.http.post<Usuario>(`${this.apiUrl}/Login`,credenciales);
+  login(credenciales: LoginDto): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.apiUrl}/Login`, credenciales);
   }
 
   registrar(datos: CrearUsuario): Observable<any> {
-    // Hace un POST a 'https://localhost:7245/api/Usuario'
-    // Esto coincide con tu backend: [HttpPost] public async Task... Crear(...)
     return this.http.post(this.apiUrl, datos);
-}
+  }
 }

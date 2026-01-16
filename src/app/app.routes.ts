@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { ListaMedicamentosComponent } from './components/lista-medicamentos/lista-medicamentos.component';
 import { RegistroComponent } from './components/registro/registro.component';
+import { BibliotecaMedicamentosComponent } from './components/biblioteca-medicamentos/biblioteca-medicamentos.component';
 
 export const routes: Routes = [
 
@@ -14,6 +15,11 @@ export const routes: Routes = [
 
         {path : 'registro', component: RegistroComponent},
   
+        {path: "bibliotecaMedi", component: BibliotecaMedicamentosComponent},
+  
          // (Opcional) Si escriben cualquier cosa rara, mandar al Login
+
+         // AGUJERO NEGROOOOOOOO
          { path: '**', redirectTo: '', pathMatch: 'full' }
+
 ];

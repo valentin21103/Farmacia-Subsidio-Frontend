@@ -1,66 +1,135 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router'; 
+import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
+
+// Importa tus interfaces y servicios
 import { Medicamento } from '../../Interfaces/medicamento';
 import { MedicamentoService } from '../../services/medicamento.service';
 import { SolicitudService } from '../../services/solicitud.service';
-import { CrearSolicitud } from '../../Interfaces/CrearSolicitud';
+import { CrearSolicitud, Solicitud } from '../../Interfaces/CrearSolicitud';
 
 @Component({
   selector: 'app-lista-medicamentos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './lista-medicamentos.component.html',
-  styleUrl: './lista-medicamentos.component.css'
+  styleUrls: ['./lista-medicamentos.component.css']
 })
 export class ListaMedicamentosComponent implements OnInit {
 
-  lista: Medicamento[] = [];
+  // --- LISTAS DE DATOS ---
+  misMedicamentos: Medicamento[] = [];      // Izquierda: Aprobados
+  medicamentosParaSolicitar: Medicamento[] = []; // Derecha: Catálogo completo
+  solicitudesPendientes: Solicitud[] = [];  // Derecha: Historial Pendiente
+
+  // --- BUSCADOR (Derecha) ---
+  busqueda: string = '';
+
+  // --- DATOS USUARIO ---
+  usuarioNombre: string = '';
+  usuarioRol: string = '';
+  usuarioId: number = 0;
 
   constructor(
     private medicamentoService: MedicamentoService,
-    private solicitudService : SolicitudService
+    private solicitudService: SolicitudService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.obtenerMedicamentos();
+    // 1. Recuperar Usuario
+    this.usuarioNombre = localStorage.getItem('usuarioNombre') || '';
+    this.usuarioRol = localStorage.getItem('usuarioRol') || '';
+    const idGuardado = localStorage.getItem('usuarioId');
+    
+    if (idGuardado) {
+      this.usuarioId = parseInt(idGuardado);
+      // 2. Cargar todo
+      this.cargarDatos();
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
-  obtenerMedicamentos() {
-    this.medicamentoService.getMedicamentos().subscribe({
-      next: (datos) => {
-        this.lista = datos;
-        console.log('Datos recibidos:', datos);
+cargarDatos() {
+    forkJoin({
+      medicamentos: this.medicamentoService.getMedicamentos(),
+      solicitudes: this.solicitudService.getSolicitudesPorUsuario(this.usuarioId)
+    }).subscribe({
+      next: ({ medicamentos, solicitudes }) => {
+        
+        console.log("Datos listos:", solicitudes);
+
+        const aprobadas = solicitudes.filter(s => 
+            s.estado === 'Aprobado' || s.estado === 'Aprobada' || s.estado == '1'
+        );
+        
+        this.misMedicamentos = medicamentos.filter(med => 
+          aprobadas.some(s => s.medicamentoNombre === med.nombre)
+        );
+
+      
+        this.solicitudesPendientes = solicitudes.filter(s => 
+          s.estado === 'Pendiente' || 
+          s.estado === 'Rechazada' || s.estado === 'Rechazado'
+        );
+
+        const nombresAprobados = aprobadas.map(s => s.medicamentoNombre);
+        const nombresPendientes = this.solicitudesPendientes.map(s => s.medicamentoNombre);
+        
+        this.medicamentosParaSolicitar = medicamentos.filter(med => 
+          !nombresAprobados.includes(med.nombre) && 
+          !nombresPendientes.includes(med.nombre)
+        );
+
       },
-      error: (e) => {
-        console.error('Error al llamar a la API:', e);
-      }
+      error: (e) => console.error('Error cargando datos:', e)
     });
   }
+  // Getter para filtrar en tiempo real el buscador de la derecha
+  get listaSolicitarFiltrada() {
+    return this.medicamentosParaSolicitar.filter(m => 
+      m.nombre.toLowerCase().includes(this.busqueda.toLowerCase())
+    );
+  }
 
-  // --- AQUÍ ESTABA EL ERROR ---
-  PedirSubcidio(medicamentoId: number ) {
-    
-    if(!confirm('¿Estás seguro de solicitar este medicamento?')) return;
+  PedirSubcidio(medicamentoId: number) {
+    if (!confirm('¿Solicitar este medicamento?')) return;
 
-    // OJO: Verifica si en tu interfaz CrearSolicitud pusiste mayúsculas o minúsculas.
-    // En TypeScript lo estándar es minúscula (usuarioId), si te marca rojo cámbialo.
-    const solicitud : CrearSolicitud = {
-        UsuarioId : 1, 
-        MedicamentoId: medicamentoId
+    const solicitud: CrearSolicitud = {
+      UsuarioId: this.usuarioId,
+      MedicamentoId: medicamentoId
     };
 
-    // EL CÓDIGO DEBE SEGUIR AQUÍ DENTRO
-    this.solicitudService.CrearSolicitud(solicitud).subscribe({
-        next: (respuesta) => {
-          alert('¡Solicitud enviada con éxito!');
-          console.log(respuesta);
-        },
-        error: (error) => {
-          alert('Ocurrió un error al solicitar.');
-          console.error(error);
-        }
+    this.solicitudService.crearSolicitud(solicitud).subscribe({
+      next: () => {
+        alert('✅ Solicitud enviada');
+        this.cargarDatos(); // Recargar listas para mover el item de "Solicitar" a "Pendiente"
+        this.busqueda = ''; // Limpiar buscador
+      },
+      error: () => alert('❌ Error al solicitar')
     });
+  }
 
-  } // <--- ¡AQUÍ ES DONDE DEBE CERRARSE LA FUNCIÓN!
+  cerrarSesion() {
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
 
+  formatFecha(fecha: string): string {
+    if (!fecha) return '';
+    try {
+      const date = new Date(fecha);
+      const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
+                     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+      const dia = date.getDate();
+      const mes = meses[date.getMonth()];
+      const mesCorto = date.toLocaleDateString('es-ES', { month: 'short' });
+      return `${dia} ${mes} - ${dia} ${mesCorto}.`;
+    } catch {
+      return fecha;
+    }
+  }
 }

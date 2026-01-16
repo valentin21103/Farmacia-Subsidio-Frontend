@@ -1,0 +1,224 @@
+/* --- 1. GENERAL Y TIPOGRAFÍA --- */
+:host {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  display: block;
+  background-color: #f0f2f5; /* Fondo gris suave para toda la pantalla */
+  min-height: 100vh;
+  padding-top: 2rem;
+}
+
+/* --- 2. CONTENEDOR PRINCIPAL (La Tarjeta Grande) --- */
+.biblioteca-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra suave y moderna */
+  overflow: hidden; /* Para que nada se salga de los bordes redondeados */
+  border: 1px solid #e1e4e8;
+}
+
+/* --- 3. HEADER (Título y Buscador) --- */
+.biblioteca-header {
+  padding: 25px 30px;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); /* Degradado azul profesional */
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titulo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.titulo h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Botón Volver (Estilo Ghost) */
+.btn-volver {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-volver:hover {
+  background: white;
+  color: #0056b3;
+}
+
+/* Buscador (Estilo Cápsula) */
+.buscador-contenedor {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8px 15px;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 0.3s;
+}
+
+.buscador-contenedor:focus-within {
+  background: white; /* Se ilumina al escribir */
+  border-color: white;
+}
+
+.buscador-contenedor:focus-within .icono-lupa,
+.buscador-contenedor:focus-within input {
+  color: #333;
+}
+
+.icono-lupa {
+  margin-right: 8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.buscador-contenedor input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 0.95rem;
+  width: 200px;
+}
+
+.buscador-contenedor input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* --- 4. COLUMNAS Y GRILLA (La estructura de la tabla) --- */
+/* Definimos las proporciones aquí para usarlas en header y filas */
+.lista-header-columns, .medicamento-card {
+  display: grid;
+  /* 3 partes para nombre, 1 para precio, 1 para botón */
+  grid-template-columns: 3fr 1fr 1fr; 
+  gap: 15px;
+  align-items: center;
+  padding: 15px 30px;
+}
+
+.lista-header-columns {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+  color: #6c757d;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+/* Alineación específica de columnas */
+.col-precio {
+  text-align: right;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.col-accion {
+  text-align: right;
+}
+
+/* --- 5. TARJETAS DE MEDICAMENTOS (Las filas) --- */
+.lista-scroll-contenedor {
+  max-height: 600px; /* Altura máxima con scroll */
+  overflow-y: auto;
+  background-color: white;
+}
+
+/* Scrollbar personalizado bonito */
+.lista-scroll-contenedor::-webkit-scrollbar {
+  width: 8px;
+}
+.lista-scroll-contenedor::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+.medicamento-card {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.medicamento-card:hover {
+  background-color: #f1f8ff; /* Azul muy clarito al pasar el mouse */
+}
+
+/* Nombre del medicamento */
+.col-nombre {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  flex-direction: column; /* Para poner la descripción abajo */
+}
+
+/* --- LA DESCRIPCIÓN NUEVA --- */
+.descripcion-texto {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 4px 0 0 0;
+  font-style: italic;
+  font-weight: 400;
+  white-space: nowrap;      /* Truco para textos largos: */
+  overflow: hidden;         /* Si es muy largo, se corta... */
+  text-overflow: ellipsis;  /* ...y pone tres puntitos */
+  max-width: 90%;
+}
+
+/* Precio destacado */
+.col-precio {
+  font-size: 1.1rem;
+  color: #28a745; /* Verde dinero */
+}
+
+/* Botón Solicitar */
+.btn-solicitar {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,123,255,0.3);
+  transition: all 0.2s;
+}
+
+.btn-solicitar:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* Efecto de elevación */
+  box-shadow: 0 4px 8px rgba(0,123,255,0.4);
+}
+
+.btn-solicitar:active {
+  transform: translateY(0);
+}
+
+/* --- 6. ESTADO VACÍO --- */
+.mensaje-vacio {
+  text-align: center;
+  padding: 50px;
+  color: #6c757d;
+}
+
+.mensaje-vacio p {
+  font-size: 1.2rem;
+  animation: parpadeo 1.5s infinite;
+}
+
+@keyframes parpadeo {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
