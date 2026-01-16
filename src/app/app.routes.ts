@@ -4,6 +4,7 @@ import { ListaMedicamentosComponent } from './components/lista-medicamentos/list
 import { RegistroComponent } from './components/registro/registro.component';
 import { BibliotecaMedicamentosComponent } from './components/biblioteca-medicamentos/biblioteca-medicamentos.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { BibliotecaUsuariosComponent } from './components/biblioteca-usuarios/biblioteca-usuarios.component';
 
 export const routes: Routes = [
 
@@ -19,6 +20,8 @@ export const routes: Routes = [
         {path : 'registro', component: RegistroComponent},
   
         {path: "bibliotecaMedi", component: BibliotecaMedicamentosComponent},
+
+        {path: "bibliotecaUsuario", component: BibliotecaUsuariosComponent},
   
          // (Opcional) Si escriben cualquier cosa rara, mandar al Login
 

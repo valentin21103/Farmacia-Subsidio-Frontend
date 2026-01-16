@@ -6,11 +6,12 @@ import { Solicitud } from '../../Interfaces/CrearSolicitud';
 import { Medicamento } from '../../Interfaces/medicamento';
 import { MedicamentoService } from '../../services/medicamento.service';
 import { SolicitudService } from '../../services/solicitud.service';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true, 
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule, RouterLink], 
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })

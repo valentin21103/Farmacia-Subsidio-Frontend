@@ -4,7 +4,6 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 
-// Importa tus interfaces y servicios
 import { Medicamento } from '../../Interfaces/medicamento';
 import { MedicamentoService } from '../../services/medicamento.service';
 import { SolicitudService } from '../../services/solicitud.service';
@@ -19,18 +18,35 @@ import { CrearSolicitud, Solicitud } from '../../Interfaces/CrearSolicitud';
 })
 export class ListaMedicamentosComponent implements OnInit {
 
-  // --- LISTAS DE DATOS ---
-  misMedicamentos: Medicamento[] = [];      // Izquierda: Aprobados
-  medicamentosParaSolicitar: Medicamento[] = []; // Derecha: Catálogo completo
-  solicitudesPendientes: Solicitud[] = [];  // Derecha: Historial Pendiente
+  // --- LISTAS DE DATOS ORIGINALES ---
+  misMedicamentos: Medicamento[] = [];          
+  medicamentosParaSolicitar: Medicamento[] = []; 
+  solicitudesPendientes: Solicitud[] = [];  
 
-  // --- BUSCADOR (Derecha) ---
-  busqueda: string = '';
+  // --- VARIABLES DE BÚSQUEDA ---
+  busquedaPrincipal: string = ''; 
+  busquedaLateral: string = '';   
 
   // --- DATOS USUARIO ---
   usuarioNombre: string = '';
   usuarioRol: string = '';
   usuarioId: number = 0;
+
+
+  // 👇👇👇 [NUEVO] VARIABLES PARA EL TICKET / MODAL 👇👇👇
+  mostrarModalTicket: boolean = false; // Controla si se ve o no el modal
+  
+  // Objeto para guardar la info que mostraremos en el ticket
+  datosTicket: any = {
+    fecha: new Date(),
+    solicitante: '',
+    medicamento: '',
+    precioOriginal: 0,
+    precioFinal: 0,
+    codigoQR: ''
+  };
+  // 👆👆👆 FIN DE LO NUEVO 👆👆👆
+
 
   constructor(
     private medicamentoService: MedicamentoService,
@@ -39,29 +55,25 @@ export class ListaMedicamentosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // 1. Recuperar Usuario
     this.usuarioNombre = localStorage.getItem('usuarioNombre') || '';
     this.usuarioRol = localStorage.getItem('usuarioRol') || '';
     const idGuardado = localStorage.getItem('usuarioId');
     
     if (idGuardado) {
       this.usuarioId = parseInt(idGuardado);
-      // 2. Cargar todo
       this.cargarDatos();
     } else {
       this.router.navigate(['/login']);
     }
   }
 
-cargarDatos() {
+  cargarDatos() {
     forkJoin({
       medicamentos: this.medicamentoService.getMedicamentos(),
       solicitudes: this.solicitudService.getSolicitudesPorUsuario(this.usuarioId)
     }).subscribe({
       next: ({ medicamentos, solicitudes }) => {
         
-        console.log("Datos listos:", solicitudes);
-
         const aprobadas = solicitudes.filter(s => 
             s.estado === 'Aprobado' || s.estado === 'Aprobada' || s.estado == '1'
         );
@@ -70,7 +82,6 @@ cargarDatos() {
           aprobadas.some(s => s.medicamentoNombre === med.nombre)
         );
 
-      
         this.solicitudesPendientes = solicitudes.filter(s => 
           s.estado === 'Pendiente' || 
           s.estado === 'Rechazada' || s.estado === 'Rechazado'
@@ -83,53 +94,74 @@ cargarDatos() {
           !nombresAprobados.includes(med.nombre) && 
           !nombresPendientes.includes(med.nombre)
         );
-
       },
       error: (e) => console.error('Error cargando datos:', e)
     });
   }
-  // Getter para filtrar en tiempo real el buscador de la derecha
-  get listaSolicitarFiltrada() {
-    return this.medicamentosParaSolicitar.filter(m => 
-      m.nombre.toLowerCase().includes(this.busqueda.toLowerCase())
+
+  // --- GETTERS ---
+  get misMedicamentosFiltrados() {
+    const term = this.busquedaPrincipal.toLowerCase();
+    return this.misMedicamentos.filter(item => 
+      item.nombre.toLowerCase().includes(term)
     );
   }
 
-  PedirSubcidio(medicamentoId: number) {
-    if (!confirm('¿Solicitar este medicamento?')) return;
+  get catalogoFiltrado() {
+    const term = this.busquedaLateral.toLowerCase();
+    return this.medicamentosParaSolicitar.filter(sol => 
+      sol.nombre.toLowerCase().includes(term)
+    );
+  }
+
+
+  // 👇👇👇 [MODIFICADO] LÓGICA DE SOLICITUD CON TICKET 👇👇👇
+  
+  // OJO: Ahora recibe el objeto 'Medicamento' completo, no solo el ID
+  PedirSubsidio(medicamento: Medicamento) {
+    
+    if (!confirm(`¿Confirmar solicitud para ${medicamento.nombre}?`)) return;
 
     const solicitud: CrearSolicitud = {
       UsuarioId: this.usuarioId,
-      MedicamentoId: medicamentoId
+      MedicamentoId: medicamento.id // Sacamos el ID del objeto
     };
 
     this.solicitudService.crearSolicitud(solicitud).subscribe({
       next: () => {
-        alert('✅ Solicitud enviada');
-        this.cargarDatos(); // Recargar listas para mover el item de "Solicitar" a "Pendiente"
-        this.busqueda = ''; // Limpiar buscador
+        
+        // 1. GENERAMOS LOS DATOS DEL TICKET (Todo Fake visual)
+        this.datosTicket = {
+          fecha: new Date(),
+          solicitante: this.usuarioNombre,
+          medicamento: medicamento.nombre,
+          precioOriginal: medicamento.precio,
+          // Calculamos el precio con 60% OFF (el usuario paga el 40%)
+          precioFinal: medicamento.precio * 0.40, 
+          // Generamos un QR falso usando una API pública gratuita
+          codigoQR: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Subsidio-${this.usuarioId}-${medicamento.id}`
+        };
+
+        // 2. ABRIMOS EL MODAL
+        this.mostrarModalTicket = true;
+
+        // 3. Recargamos los datos de fondo
+        this.cargarDatos(); 
+        this.busquedaLateral = ''; // Limpiamos el buscador derecho
       },
-      error: () => alert('❌ Error al solicitar')
+      error: () => alert('❌ Error al solicitar el subsidio')
     });
   }
+
+  // Función para cerrar el modal desde el botón "Entendido"
+  cerrarModal() {
+    this.mostrarModalTicket = false;
+  }
+  // 👆👆👆 FIN DE LO NUEVO 👆👆👆
+
 
   cerrarSesion() {
     localStorage.clear();
     this.router.navigate(['/login']);
-  }
-
-  formatFecha(fecha: string): string {
-    if (!fecha) return '';
-    try {
-      const date = new Date(fecha);
-      const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
-                     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-      const dia = date.getDate();
-      const mes = meses[date.getMonth()];
-      const mesCorto = date.toLocaleDateString('es-ES', { month: 'short' });
-      return `${dia} ${mes} - ${dia} ${mesCorto}.`;
-    } catch {
-      return fecha;
-    }
   }
 }

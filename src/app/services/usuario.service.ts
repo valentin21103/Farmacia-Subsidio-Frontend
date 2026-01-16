@@ -20,4 +20,13 @@ export class UsuarioService {
   registrar(datos: CrearUsuario): Observable<any> {
     return this.http.post(this.apiUrl, datos);
   }
+
+  getUsuarios(): Observable<Usuario[]>{
+    return this.http.get<Usuario[]>(this.apiUrl);
+  }
+
+  eliminarUsuario(id:number): Observable<any>{
+    return  this.http.delete(`${this.apiUrl}/${id}`);
+
+  }
 }

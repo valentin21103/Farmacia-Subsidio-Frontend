@@ -1,0 +1,182 @@
+/* --- 1. GENERAL --- */
+:host {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  display: block;
+  background-color: #f0f4f8; /* Mismo fondo azulado gris del admin */
+  min-height: 100vh;
+  padding-top: 2rem;
+}
+
+/* --- 2. CONTENEDOR PRINCIPAL --- */
+.biblioteca-container {
+  max-width: 1000px; /* Un poco más ancho para que quepan los emails */
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 16px; /* Bordes más redonditos */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid #fff;
+}
+
+/* --- 3. HEADER AZUL FACHERO --- */
+.biblioteca-header {
+  padding: 20px 30px;
+  /* El mismo degradado azul de tu admin */
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titulo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.titulo h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Botón Volver (Estilo Glass) */
+.btn-volver {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+}
+.btn-volver:hover {
+  background: white;
+  color: #0056b3;
+}
+
+/* Buscador */
+.buscador-contenedor {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8px 15px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: 0.3s;
+}
+.buscador-contenedor:focus-within {
+  background: white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+.buscador-contenedor input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white; /* Texto blanco al escribir */
+  margin-left: 10px;
+}
+.buscador-contenedor:focus-within input {
+  color: #333; /* Texto oscuro cuando el fondo es blanco */
+}
+.buscador-contenedor:focus-within .icono-lupa { color: #333; }
+.icono-lupa { color: rgba(255,255,255,0.7); }
+
+/* --- 4. GRILLA (COLUMNAS) --- */
+/* Ajustamos: 2 partes Nombre, 2 partes Email, 1 parte Acción */
+.lista-header-columns, .usuario-card {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr; 
+  gap: 20px;
+  align-items: center;
+  padding: 15px 30px;
+}
+
+.lista-header-columns {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #eef2f7;
+  color: #6c757d;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+}
+
+/* --- 5. FILAS (CARDS) --- */
+.lista-scroll-contenedor {
+  max-height: 65vh;
+  overflow-y: auto;
+  background-color: white;
+}
+
+.usuario-card {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s;
+}
+.usuario-card:hover {
+  background-color: #f4f9ff; /* Azul muy muy clarito al pasar el mouse */
+}
+
+/* Estilos de Texto */
+.col-nombre {
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+}
+
+.id-badge {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.col-email {
+  color: #555;
+  font-size: 0.95rem;
+}
+
+/* Alineación a la derecha para el botón */
+.col-accion {
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* --- 6. BOTÓN ELIMINAR (ROJO PERO MODERNO) --- */
+.btn-eliminar {
+  background-color: #fff;
+  border: 1px solid #ffcccc;
+  color: #e74c3c; /* Rojo suave */
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-eliminar:hover {
+  background-color: #e74c3c;
+  color: white;
+  border-color: #e74c3c;
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+}
+
+/* --- SCROLLBAR --- */
+.lista-scroll-contenedor::-webkit-scrollbar { width: 6px; }
+.lista-scroll-contenedor::-webkit-scrollbar-thumb { background-color: #cbd5e0; border-radius: 10px; }
+
+/* MENSAJE VACÍO */
+.mensaje-vacio {
+  text-align: center;
+  padding: 40px;
+  color: #aaa;
+  font-style: italic;
+}

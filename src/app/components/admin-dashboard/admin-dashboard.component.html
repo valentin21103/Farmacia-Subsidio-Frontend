@@ -1,8 +1,8 @@
 <nav class="admin-nav">
   <h1>Panel de Administración</h1>
   <div class="nav-links">
-    <span>Inicio</span>
-    <span>Salir</span>
+    
+    <button class="btn-volver" routerLink="/login">volver iniciar sesion</button>
   </div>
 </nav>
 
@@ -76,14 +76,13 @@
         <button class="btn-footer agregar" (click)="toggleFormulario()">
           {{ mostrarFormulario ? 'Cancelar' : 'Agregar' }}
         </button>
-        <button class="btn-footer eliminar-fake">Eliminar</button> 
       </div>
 
     </section>
 
     <section class="panel usuarios-panel">
       <h3>Usuarios</h3>
-      <button class="btn-ver-usuarios">VER TODOS LOS USUARIOS</button>
+      <button class="btn-ver-usuarios" routerLink="/bibliotecaUsuario">VER TODOS LOS USUARIOS</button>
     </section>
 
   </div>

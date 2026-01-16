@@ -26,14 +26,14 @@
       
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Buscar medicamentos..." [(ngModel)]="busqueda" class="main-search">
+        <input type="text" placeholder="Buscar medicamentos..." [(ngModel)]="busquedaPrincipal" class="main-search">
         <span class="mic-icon">🎤</span>
       </div>
     </div>
 
     <div class="medicamentos-grid">
       
-      <div class="card-medicamento" *ngFor="let item of misMedicamentos; let i = index">
+      <div class="card-medicamento" *ngFor="let item of misMedicamentosFiltrados; let i = index">
         
         <div class="card-top">
           <div class="card-info-top">
@@ -54,13 +54,17 @@
             <span class="check-icon">✓</span> Subsidio Aprobado
           </div>
           
-          <button class="btn-card" [ngClass]="{'btn-blue': i % 2 === 0, 'btn-light': i % 2 !== 0}">
-             <span *ngIf="i % 2 === 0">+ Solicitar</span>
-             <span *ngIf="i % 2 !== 0">ℹ Ver Información</span>
+          <button class="btn-card btn-blue" (click)="PedirSubsidio(item)">
+             Solicitar Subsidio
           </button>
         </div>
 
       </div>
+
+      <div *ngIf="misMedicamentosFiltrados.length === 0" style="width: 100%; text-align: center; color: #888; grid-column: span 3;">
+        <p>No se encontraron medicamentos con ese nombre.</p>
+      </div>
+
     </div>
 
   </div>
@@ -74,27 +78,26 @@
 
       <div class="lista-lateral">
         <div class="quick-add">
-           <input type="text" placeholder="Escribe para pedir..." [(ngModel)]="busqueda" class="input-transparent">
+           <input type="text" placeholder="Escribe para pedir..." [(ngModel)]="busquedaLateral" class="input-transparent">
            <button class="btn-mini-add">+</button>
         </div>
 
-        <div class="item-solicitud" *ngFor="let sol of medicamentosParaSolicitar.slice(0, 3)">
+        <div class="item-solicitud" *ngFor="let sol of catalogoFiltrado.slice(0, 3)">
           <div class="sol-info">
             <strong>{{ sol.nombre }}</strong>
             <span class="sol-fecha">23 abril - 23 Abr</span>
           </div>
-       
         </div>
         
-      <button routerLink="/bibliotecaMedi" class="btn-secondary">
-        Ver Todos los Medicamentos
-  </button>
+        <button routerLink="/bibliotecaMedi" class="btn-ver-todos">
+          Ver Todos los Medicamentos
+        </button>
       </div>
     </div>
 
     <div class="sidebar-card card-pendientes">
       <div class="card-header">
-        <h3>Medicamentos Pendientes</h3>
+        <h3 class="titulo-pendientes">Medicamentos Pendientes</h3>
       </div>
        
        <div class="card-illustration">
@@ -112,6 +115,61 @@
           </span>
         </div>
       </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="mostrarModalTicket">
+  <div class="ticket-container">
+    
+    <div class="ticket-header">
+      <h3>¡Subsidio Aprobado! 🎉</h3>
+      <span class="ticket-id">#SUB-{{ datosTicket.fecha | date:'mmss' }}</span>
+    </div>
+
+    <div class="ticket-body">
+      
+      <div class="info-row">
+        <span class="label">Solicitante:</span>
+        <span class="value user">{{ datosTicket.solicitante }}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="label">Fecha:</span>
+        <span class="value">{{ datosTicket.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="medicamento-info">
+        <h4>{{ datosTicket.medicamento }}</h4>
+        
+        <div class="precios-container">
+          <div class="precio-col">
+            <span class="p-label">Precio Lista</span>
+            <span class="p-valor tachado">${{ datosTicket.precioOriginal }}</span>
+          </div>
+          <div class="precio-col destacado">
+            <span class="p-label">Con Subsidio (60%)</span>
+            <span class="p-valor final">${{ datosTicket.precioFinal | number:'1.0-0' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="qr-section">
+        <div class="qr-box">
+          <img [src]="datosTicket.codigoQR" alt="QR Subsidio">
+        </div>
+        <p class="qr-warning">
+          ⚠️ Tienes <strong>12 horas</strong> para presentar este código en la farmacia.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="ticket-footer">
+      <button class="btn-cerrar-modal" (click)="cerrarModal()">Entendido, cerrar</button>
     </div>
 
   </div>

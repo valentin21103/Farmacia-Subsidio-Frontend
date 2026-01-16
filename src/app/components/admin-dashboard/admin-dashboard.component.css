@@ -255,6 +255,16 @@
   cursor: pointer;
   transition: all 0.3s;
 }
+
+.btn-volver {
+  border: 2px solid #000000;
+  color: #090c14;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
 .btn-ver-usuarios:hover { background: #34495e; color: white; }
 
 /* === 8. EL FORMULARIO FLOTANTE (Overlay) === */
