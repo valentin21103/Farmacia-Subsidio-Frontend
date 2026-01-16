@@ -29,4 +29,8 @@ export class UsuarioService {
     return  this.http.delete(`${this.apiUrl}/${id}`);
 
   }
+
+  getUsuarioPorId(id: number): Observable<Usuario> {
+  return this.http.get<Usuario>(`${this.apiUrl}/${id}`);
+}
 }

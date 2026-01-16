@@ -9,7 +9,7 @@
 
         <div class="buscador-contenedor">
             <i class="icono-lupa">🔍</i>
-            <input type="text" placeholder="buscar..."/>
+            <input type="text" placeholder="Buscar usuario..." [(ngModel)]="busqueda"/>
         </div>
     </header>
 
@@ -25,7 +25,8 @@
             <p>Cargando Catalogo...</p>
         </div>
 
-        <div class="medicamento-card" *ngFor="let med of listaMedicamentos">
+        <div class="medicamento-card" *ngFor="let med of medicamentosFiltrados">            
+            
 
             <div class="col-nombre">{{med.nombre}}
                 <p class="descripcion-texto" *ngIf="med.descripcion">

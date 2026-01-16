@@ -77,10 +77,7 @@
       </div>
 
       <div class="lista-lateral">
-        <div class="quick-add">
-           <input type="text" placeholder="Escribe para pedir..." [(ngModel)]="busquedaLateral" class="input-transparent">
-           <button class="btn-mini-add">+</button>
-        </div>
+        <h3>Medicamentos Mas Pedidos</h3>
 
         <div class="item-solicitud" *ngFor="let sol of catalogoFiltrado.slice(0, 3)">
           <div class="sol-info">
@@ -105,7 +102,7 @@
        </div>
 
       <div class="lista-lateral">
-        <div class="item-solicitud" *ngFor="let sol of solicitudesPendientes.slice(0, 2)">
+        <div class="item-solicitud" *ngFor="let sol of solicitudesPendientes.slice()">
           <div class="sol-info">
             <strong>{{ sol.medicamentoNombre }}</strong>
             <span class="sol-fecha">Solicitado recientemente</span>

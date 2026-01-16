@@ -24,7 +24,7 @@ export class BibliotecaUsuariosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const idGuardado = localStorage.getItem('usuarioId');
+    const idGuardado = sessionStorage.getItem('usuarioId');
     
     if (idGuardado) {
       this.usuarioId = parseInt(idGuardado);

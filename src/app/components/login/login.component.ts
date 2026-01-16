@@ -35,19 +35,19 @@ export class LoginComponent {
         console.log('Login exitoso:', usuario);
 
         // --- GUARDADO DE SEGURIDAD EN EL NAVEGADOR ---
-        localStorage.setItem('usuarioNombre', usuario.nombre);
-        localStorage.setItem('usuarioRol', usuario.roll);
-
-        // 👇 ¡AGREGA ESTA LÍNEA OBLIGATORIAMENTE! 👇
+        sessionStorage.setItem('usuarioNombre', usuario.nombre);
+        sessionStorage.setItem('usuarioRol', usuario.roll);
         // Sin esto, la pantalla de inicio no te deja pasar
-        localStorage.setItem('usuarioId', usuario.id.toString()); 
+        sessionStorage.setItem('usuarioId', usuario.id.toString()); 
 
-        if(usuario.roll == "Administrador")
-        {
-          this.router.navigate(['/inicioAdmin']); 
+     // En el método IniciarSesion...
 
-        }
-        else this.router.navigate(['/inicio']); 
+      if (usuario.roll == "Administrador" || usuario.roll == "administrador") {
+    this.router.navigate(['/inicioAdmin']); 
+    } 
+     else if (usuario.roll == "Usuario" || usuario.roll == "usuario") {
+    this.router.navigate(['/inicio']); 
+      }
       },
       error: (err) => {
         console.error(err);

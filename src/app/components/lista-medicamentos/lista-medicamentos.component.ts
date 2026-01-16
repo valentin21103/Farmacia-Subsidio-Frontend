@@ -7,6 +7,7 @@ import { forkJoin } from 'rxjs';
 import { Medicamento } from '../../Interfaces/medicamento';
 import { MedicamentoService } from '../../services/medicamento.service';
 import { SolicitudService } from '../../services/solicitud.service';
+import { UsuarioService } from '../../services/usuario.service'; // 👈 1. IMPORTAMOS EL USUARIO SERVICE
 import { CrearSolicitud, Solicitud } from '../../Interfaces/CrearSolicitud';
 
 @Component({
@@ -32,11 +33,9 @@ export class ListaMedicamentosComponent implements OnInit {
   usuarioRol: string = '';
   usuarioId: number = 0;
 
-
-  // 👇👇👇 [NUEVO] VARIABLES PARA EL TICKET / MODAL 👇👇👇
-  mostrarModalTicket: boolean = false; // Controla si se ve o no el modal
+  // 👇 VARIABLES PARA EL TICKET / MODAL 👇
+  mostrarModalTicket: boolean = false; 
   
-  // Objeto para guardar la info que mostraremos en el ticket
   datosTicket: any = {
     fecha: new Date(),
     solicitante: '',
@@ -45,24 +44,39 @@ export class ListaMedicamentosComponent implements OnInit {
     precioFinal: 0,
     codigoQR: ''
   };
-  // 👆👆👆 FIN DE LO NUEVO 👆👆👆
-
 
   constructor(
     private medicamentoService: MedicamentoService,
     private solicitudService: SolicitudService,
+    private usuarioService: UsuarioService, // 👈 2. INYECTAMOS EL SERVICIO AQUÍ
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.usuarioNombre = localStorage.getItem('usuarioNombre') || '';
-    this.usuarioRol = localStorage.getItem('usuarioRol') || '';
-    const idGuardado = localStorage.getItem('usuarioId');
+    // Recuperamos datos del localStorage
+    this.usuarioNombre = sessionStorage.getItem('usuarioNombre') || '';
+    this.usuarioRol = sessionStorage.getItem('usuarioRol') || '';
+    const idGuardado = sessionStorage.getItem('usuarioId');
     
     if (idGuardado) {
       this.usuarioId = parseInt(idGuardado);
-      this.cargarDatos();
+
+      // Preguntamos al Backend si este ID todavía existe en la base de datos
+      this.usuarioService.getUsuarioPorId(this.usuarioId).subscribe({
+        next: (data) => {
+          // ✅ SI EXISTE: Procedemos a cargar todo normal
+          this.cargarDatos();
+        },
+        error: (error) => {
+          // ❌ NO EXISTE (Error 404): El admin lo borró
+          console.warn("Usuario no encontrado en BD. Cerrando sesión...");
+          alert("Tu usuario ha sido eliminado o la sesión expiró.");
+          this.cerrarSesion(); // Lo pateamos al login
+        }
+      });
+
     } else {
+      // Si no hay ID en el navegador, directo al login
       this.router.navigate(['/login']);
     }
   }
@@ -114,54 +128,35 @@ export class ListaMedicamentosComponent implements OnInit {
     );
   }
 
-
-  // 👇👇👇 [MODIFICADO] LÓGICA DE SOLICITUD CON TICKET 👇👇👇
-  
-  // OJO: Ahora recibe el objeto 'Medicamento' completo, no solo el ID
+  // LÓGICA DE SOLICITUD CON TICKET
   PedirSubsidio(medicamento: Medicamento) {
     
     if (!confirm(`¿Confirmar solicitud para ${medicamento.nombre}?`)) return;
 
-    const solicitud: CrearSolicitud = {
-      UsuarioId: this.usuarioId,
-      MedicamentoId: medicamento.id // Sacamos el ID del objeto
-    };
+   
 
-    this.solicitudService.crearSolicitud(solicitud).subscribe({
-      next: () => {
-        
-        // 1. GENERAMOS LOS DATOS DEL TICKET (Todo Fake visual)
+        // 1. Datos del Ticket
         this.datosTicket = {
           fecha: new Date(),
           solicitante: this.usuarioNombre,
           medicamento: medicamento.nombre,
           precioOriginal: medicamento.precio,
-          // Calculamos el precio con 60% OFF (el usuario paga el 40%)
           precioFinal: medicamento.precio * 0.40, 
-          // Generamos un QR falso usando una API pública gratuita
           codigoQR: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Subsidio-${this.usuarioId}-${medicamento.id}`
         };
 
-        // 2. ABRIMOS EL MODAL
+        // 2. Abrir Modal
         this.mostrarModalTicket = true;
 
-        // 3. Recargamos los datos de fondo
-        this.cargarDatos(); 
-        this.busquedaLateral = ''; // Limpiamos el buscador derecho
-      },
-      error: () => alert('❌ Error al solicitar el subsidio')
-    });
+     
   }
 
-  // Función para cerrar el modal desde el botón "Entendido"
   cerrarModal() {
     this.mostrarModalTicket = false;
   }
-  // 👆👆👆 FIN DE LO NUEVO 👆👆👆
-
 
   cerrarSesion() {
-    localStorage.clear();
+    sessionStorage.clear();
     this.router.navigate(['/login']);
   }
 }

@@ -33,7 +33,7 @@ constructor(
   // --- AL INICIAR (Arranca el motor) ---
   ngOnInit(): void {
     // 1. Verificamos quién está logueado
-    const idGuardado = localStorage.getItem('usuarioId');
+    const idGuardado = sessionStorage.getItem('usuarioId');
     
     if (idGuardado) {
       this.usuarioId = parseInt(idGuardado);
@@ -71,6 +71,13 @@ constructor(
       },
       error: (e) => alert("❌ Error al solicitar: " + e.message)
     });
+  }
+
+    get medicamentosFiltrados() {
+    const term = this.busqueda.toLowerCase();
+    return this.listaMedicamentos.filter(u => 
+      u.nombre.toLowerCase().includes(term) 
+    );
   }
 
 
