@@ -12,9 +12,10 @@
       </div>
 
       <div class="user-actions">
-        <span class="status-indicator"></span> Sistema Online
+  <span class="status-indicator" [class.online]="backendOnline"></span>
+  
+  {{ backendOnline ? 'Sistema Online' : 'Sistema Offline' }}
       </div>
-
     </div>
   </nav>
 

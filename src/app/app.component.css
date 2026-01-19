@@ -123,3 +123,21 @@
   70% { box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
   100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
 }
+
+/* Estilo base (Gris o Rojo por defecto - Offline) */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #dc3545; 
+    margin-right: 5px;
+    box-shadow: 0 0 5px rgba(220, 53, 69, 0.5);
+    transition: background-color 0.3s ease;
+}
+
+/* Estilo cuando está Online  */
+.status-indicator.online {
+    background-color: #28a745; 
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.8); 
+}
