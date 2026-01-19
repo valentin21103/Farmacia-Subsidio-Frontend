@@ -7,8 +7,8 @@ export interface Solicitud {
   solicitudId: number;
   usuarioId: number;
   usuarioNombre: string ;
-  medicamentoNombre: string;  // <--- ¡Esto es lo que queríamos!
-  medicamentoPrecio: number;  // <--- Nuevo dato
-  estado: string;             // Ahora llega directo como texto del backend
+  medicamentoNombre: string; 
+  medicamentoPrecio: number;  
+  estado: string;             
   fechaSolicitud: string;
 }

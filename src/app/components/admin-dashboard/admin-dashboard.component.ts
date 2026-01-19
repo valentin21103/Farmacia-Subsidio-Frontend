@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from "@angular/router";
+import Swal from 'sweetalert2';
 
 import { Solicitud } from '../../Interfaces/CrearSolicitud';
 import { Medicamento } from '../../Interfaces/medicamento';
 import { MedicamentoService } from '../../services/medicamento.service';
 import { SolicitudService } from '../../services/solicitud.service';
-import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -23,23 +24,21 @@ export class AdminDashboardComponent implements OnInit {
   busquedaSolicitud: string = "";
   busquedaInventario: string = "";  
 
-  mostrarFormulario: boolean = false; // Para abrir/cerrar el form
+  mostrarFormulario: boolean = false; 
   
-  // Objeto temporal para el formulario (sin ID, porque es nuevo)
   nuevoMedicamento: any = {
     nombre: '',
     descripcion: '',
     precio: 0,
     stock: 0,
-  
   };
+
   constructor(
     private medicamentoService: MedicamentoService,
     private solicitudService: SolicitudService
   ){}
 
   ngOnInit(): void {
-
     this.cargarSolicitudes();
     this.cargarMedicamentos(); 
   }
@@ -80,67 +79,106 @@ export class AdminDashboardComponent implements OnInit {
     );
   }
 
+  // --- APROBAR (CON SWAL) ---
   aprobar(sol: Solicitud) {
-    if (!confirm(`¿Aprobar subsidio para ${sol.usuarioNombre}?`)) return;
-
-    this.solicitudService.aprobarSolicitud(sol.solicitudId).subscribe({
-      next: () => {
-        alert("✅ Aprobada");
-        this.cargarSolicitudes();
-      },
-      error: (e) => alert("Error: " + e.message)
+    Swal.fire({
+      title: `¿Aprobar a ${sol.usuarioNombre}?`,
+      text: `Se aprobará el subsidio para ${sol.medicamentoNombre}`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, aprobar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.solicitudService.aprobarSolicitud(sol.solicitudId).subscribe({
+          next: () => {
+            Swal.fire('¡Aprobada!', 'La solicitud ha sido procesada.', 'success');
+            this.cargarSolicitudes();
+          },
+          error: (e) => Swal.fire('Error', e.message, 'error')
+        });
+      }
     });
   }
 
+  // --- RECHAZAR (CON SWAL) ---
   rechazar(sol: Solicitud) {
-    if (!confirm(`¿Rechazar a ${sol.usuarioNombre}?`)) return;
-
-    this.solicitudService.rechazarSolicitud(sol.solicitudId).subscribe({
-      next: () => {
-        alert("❌ Rechazada");
-        this.cargarSolicitudes();
-      },
-      error: (e) => alert("Error: " + e.message)
+    Swal.fire({
+      title: `¿Rechazar a ${sol.usuarioNombre}?`,
+      text: "Esta acción no se puede deshacer.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, rechazar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.solicitudService.rechazarSolicitud(sol.solicitudId).subscribe({
+          next: () => {
+            Swal.fire('Rechazada', 'La solicitud fue denegada.', 'success');
+            this.cargarSolicitudes();
+          },
+          error: (e) => Swal.fire('Error', e.message, 'error')
+        });
+      }
     });
-
   }
 
-  // Función para mostrar/ocultar el formulario
   toggleFormulario() {
     this.mostrarFormulario = !this.mostrarFormulario;
   }
 
-  // Función AGREGAR
   guardarMedicamento() {
-    // Validación básica
+    // Validación con Swal
     if (!this.nuevoMedicamento.nombre || this.nuevoMedicamento.precio <= 0) {
-      alert("Por favor completa el nombre y el precio.");
+      Swal.fire('Atención', 'Por favor completa el nombre y el precio.', 'warning');
       return;
     }
 
     this.medicamentoService.agregarMedicamento(this.nuevoMedicamento).subscribe({
       next: () => {
-        alert("✅ Medicamento Agregado!");
-        this.cargarMedicamentos(); // Recargamos la lista
-        this.toggleFormulario();   // Cerramos el form
-        
-        // Limpiamos los campos
+        Swal.fire({
+          title: '¡Agregado!',
+          text: 'Medicamento guardado correctamente',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false
+        });
+
+        this.cargarMedicamentos(); 
+        this.toggleFormulario();   
         this.nuevoMedicamento = { nombre: '', descripcion: '', precio: 0, stock: 0, imagenUrl: '' };
       },
-      error: (e) => alert("Error al guardar: " + e.message)
+      error: (e) => {
+        Swal.fire('Error', 'No se pudo guardar: ' + e.message, 'error');
+      }
     });
   }
 
-  // Función BORRAR
+  // --- BORRAR (CON SWAL) ---
   borrarMedicamento(id: number) {
-    if (confirm("¿Estás seguro de eliminar este medicamento?")) {
-      this.medicamentoService.eliminarMedicamento(id).subscribe({
-        next: () => {
-          alert("🗑️ Eliminado correctamente");
-          this.cargarMedicamentos(); // Recargamos la lista
-        },
-        error: (e) => alert("Error al eliminar: " + e.message)
-      });
-    }
+    Swal.fire({
+      title: '¿Eliminar medicamento?',
+      text: "Se borrará del inventario permanentemente.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.medicamentoService.eliminarMedicamento(id).subscribe({
+          next: () => {
+            Swal.fire('¡Eliminado!', 'El medicamento ha sido borrado.', 'success');
+            this.cargarMedicamentos();
+          },
+          error: (e) => Swal.fire('Error', 'No se pudo eliminar: ' + e.message, 'error')
+        });
+      }
+    });
   }
 }

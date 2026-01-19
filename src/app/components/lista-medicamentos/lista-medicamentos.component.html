@@ -95,6 +95,12 @@
     <div class="sidebar-card card-pendientes">
       <div class="card-header">
         <h3 class="titulo-pendientes">Medicamentos Pendientes</h3>
+        <button *ngIf="solicitudesPendientes.length > 0" 
+                class="btn-limpiar" 
+                (click)="limpiarMedicamentosSolicitados()"
+                title="Limpiar vista">
+            🗑️ Limpiar
+        </button>
       </div>
        
        <div class="card-illustration">

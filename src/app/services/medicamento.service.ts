@@ -8,8 +8,6 @@ import { Medicamento } from '../Interfaces/medicamento';
 })
 export class MedicamentoService {
 
-  // OJO: Tu controlador dice [Route("api/[controller]")], y la clase es MedicamentosController.
-  // Por lo tanto, la URL termina en "Medicamentos" (plural).
   private apiUrl = 'https://localhost:7245/api/Medicamentos';
 
   constructor(private http: HttpClient) { }
@@ -28,7 +26,6 @@ export class MedicamentoService {
 
   // 3. DELETE (Borrar)
   eliminarMedicamento(id: number): Observable<any> {
-    // La ruta queda: .../api/Medicamentos/5
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 })
 export class UsuarioService {
 
-  // Asegúrate de que este puerto sea el correcto (donde corre tu Swagger)
   private apiUrl = 'https://localhost:7245/api/Usuario';
 
   constructor(private http: HttpClient) { }

@@ -328,6 +328,19 @@
   line-height: 1.4;
 }
 
+/* Estilo del botón Limpiar */
+.btn-limpiar {
+    background-color: transparent;
+    border: 1px solid #ffcccc;
+    color: #d33;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+
 /* Footer Botón */
 .ticket-footer { padding: 15px 25px; border-top: 1px solid #f4f7fe; text-align: center; }
 .btn-cerrar-modal {

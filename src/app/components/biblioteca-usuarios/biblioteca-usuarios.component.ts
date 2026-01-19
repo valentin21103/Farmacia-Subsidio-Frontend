@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // <--- 1. IMPORTAR ESTO
-import { FormsModule } from '@angular/forms';   // <--- 1. IMPORTAR ESTO
-import { Router } from '@angular/router';       // (Corregí el import de Route que sobraba)
+import { CommonModule } from '@angular/common'; 
+import { FormsModule } from '@angular/forms';   
+import { Router } from '@angular/router';       
 import { Usuario } from '../../Interfaces/Login';
 import { UsuarioService } from '../../services/usuario.service';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-biblioteca-usuarios',
   standalone: true,
-  imports: [CommonModule, FormsModule], // <--- 2. AGREGARLOS AQUÍ
+  imports: [CommonModule, FormsModule],
   templateUrl: './biblioteca-usuarios.component.html',
   styleUrl: './biblioteca-usuarios.component.css'
 })
@@ -44,7 +46,6 @@ export class BibliotecaUsuariosComponent implements OnInit {
     });
   }
 
-  // 👇 3. AGREGAR ESTE GET PARA QUE EL BUSCADOR FUNCIONE
   get usuariosFiltrados() {
     const term = this.busqueda.toLowerCase();
     return this.listaUsuarios.filter(u => 
@@ -53,19 +54,66 @@ export class BibliotecaUsuariosComponent implements OnInit {
   }
 
   borrarUsuario(id: number) {
-    // 👇 4. CORREGIDO EL MENSAJE
-    if (confirm("¿Estás seguro de eliminar este USUARIO? Esta acción es irreversible.")) {
-      this.usuarioService.eliminarUsuario(id).subscribe({
-        next: () => {
-          alert("🗑️ Usuario eliminado correctamente");
-          this.cargarUsuarios(); 
-        },
-        error: (e) => alert("Error al eliminar: " + e.message)
-      });
-    }
+    
+    // 1. PRIMERA ADVERTENCIA 
+    Swal.fire({
+      title: '¿ESTÁS SEGURO?',
+      text: "⚠️ Estás a punto de eliminar este usuario y TODOS sus datos (historial, solicitudes, etc). Esta acción es IRREVERSIBLE.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33', 
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, quiero eliminarlo',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      
+      // 2. SEGUNDA ADVERTENCIA 
+      if (result.isConfirmed) {
+        
+        Swal.fire({
+          title: 'CONFIRMACIÓN FINAL',
+          text: 'Por seguridad, escribe la palabra "ELIMINAR" abajo para confirmar.',
+          input: 'text',
+          icon: 'warning',
+          inputAttributes: {
+            autocapitalize: 'off'
+          },
+          showCancelButton: true,
+          confirmButtonText: 'CONFIRMAR BORRADO',
+          confirmButtonColor: '#d33',
+          showLoaderOnConfirm: true,
+          
+          preConfirm: (palabraEscrita) => {
+            if (palabraEscrita !== 'ELIMINAR') {
+              Swal.showValidationMessage('Debes escribir "ELIMINAR" exactamente.')
+            }
+          }
+        }).then((segundoResult) => {
+          
+          // 3. SI PASÓ LA DOBLE SEGURIDAD, EJECUTAMOS
+          if (segundoResult.isConfirmed) {
+            
+            this.usuarioService.eliminarUsuario(id).subscribe({
+              next: () => {
+                Swal.fire(
+                  '¡Eliminado!',
+                  'El usuario ha sido borrado del sistema.',
+                  'success'
+                );
+                this.cargarUsuarios(); // Recargamos la lista
+              },
+              error: (e) => {
+                Swal.fire('Error', 'No se pudo eliminar: ' + e.message, 'error');
+              }
+            });
+
+          }
+        });
+      }
+    });
   }
 
   volver() {
-    this.router.navigate(['/inicioAdmin']); // Asumo que esta ruta existe en tu app.routes
+    this.router.navigate(['/inicioAdmin']); 
   }
 }

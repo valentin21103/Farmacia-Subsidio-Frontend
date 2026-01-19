@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CrearUsuario } from '../../Interfaces/Login';
 import { UsuarioService } from '../../services/usuario.service';
 import { Route, Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registro',
@@ -46,14 +47,23 @@ CrearCuenta(){
 
   this.usuarioService.registrar(this.Usuario as any).subscribe({
     next: () => {
-   alert("✅ ¡Cuenta creada con éxito! Ahora inicia sesión.");
+
+      Swal.fire({
+         title: '¡Cuenta Creada Exitosamente!',
+              text: `Bienvenido ${this.Usuario.nombre}?`,
+              icon: 'success'
+      });
         
         // 3. REDIRECCIÓN: Lo mandamos al Login
         this.router.navigate(['/login']);
       },
       error: () => {
-        
-        alert("❌ Ocurrió un error al registrarse. Verifica la consola.");
+         Swal.fire({
+                      title: 'Error',
+                      text: '❌ Ocurrió un error al registrarse. ',
+                      icon: 'error'
+                    });
+    
       }
     });
   }

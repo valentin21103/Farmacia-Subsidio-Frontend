@@ -4,7 +4,7 @@ export interface LoginDto {
 }
 
 export interface Usuario {
-    id: number; // <--- ¡AGREGA ESTO! Sin esto Angular ignora el ID
+    id: number; 
     nombre: string;
     apellido: string;
     correoElectronico: string;

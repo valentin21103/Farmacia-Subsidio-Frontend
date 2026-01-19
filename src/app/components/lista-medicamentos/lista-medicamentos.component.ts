@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router'; 
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import Swal from 'sweetalert2';
+
 
 import { Medicamento } from '../../Interfaces/medicamento';
 import { MedicamentoService } from '../../services/medicamento.service';
 import { SolicitudService } from '../../services/solicitud.service';
-import { UsuarioService } from '../../services/usuario.service'; // 👈 1. IMPORTAMOS EL USUARIO SERVICE
+import { UsuarioService } from '../../services/usuario.service'; 
 import { CrearSolicitud, Solicitud } from '../../Interfaces/CrearSolicitud';
 
 @Component({
@@ -48,7 +50,7 @@ export class ListaMedicamentosComponent implements OnInit {
   constructor(
     private medicamentoService: MedicamentoService,
     private solicitudService: SolicitudService,
-    private usuarioService: UsuarioService, // 👈 2. INYECTAMOS EL SERVICIO AQUÍ
+    private usuarioService: UsuarioService, 
     private router: Router
   ) { }
 
@@ -129,27 +131,46 @@ export class ListaMedicamentosComponent implements OnInit {
   }
 
   // LÓGICA DE SOLICITUD CON TICKET
-  PedirSubsidio(medicamento: Medicamento) {
+ PedirSubsidio(medicamento: Medicamento) {
     
-    if (!confirm(`¿Confirmar solicitud para ${medicamento.nombre}?`)) return;
+  Swal.fire({
+    title: `¿Pedir ${medicamento.nombre}?`,
+    text: "Se generará una solicitud a tu nombre",
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, generar ticket',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    
+    if (result.isConfirmed) {
+      
+      // 2. Preparamos los datos del Ticket
+      this.datosTicket = {
+        fecha: new Date(),
+        solicitante: this.usuarioNombre,
+        medicamento: medicamento.nombre,
+        precioOriginal: medicamento.precio,
+        precioFinal: medicamento.precio * 0.40, 
+        codigoQR: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Subsidio-${this.usuarioId}-${medicamento.id}`
+      };
 
-   
+      // 3. Abrimos TU modal (el del QR)
+      this.mostrarModalTicket = true;
 
-        // 1. Datos del Ticket
-        this.datosTicket = {
-          fecha: new Date(),
-          solicitante: this.usuarioNombre,
-          medicamento: medicamento.nombre,
-          precioOriginal: medicamento.precio,
-          precioFinal: medicamento.precio * 0.40, 
-          codigoQR: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Subsidio-${this.usuarioId}-${medicamento.id}`
-        };
-
-        // 2. Abrir Modal
-        this.mostrarModalTicket = true;
-
-     
-  }
+      /*Swal.fire({
+        title: '¡Listo!',
+        text: 'Ticket generado correctamente.',
+        icon: 'success',
+        timer: 1500, // Se cierra solo en 1.5 seg
+        showConfirmButton: false
+        
+      });
+      */
+    }
+  });
+}
 
   cerrarModal() {
     this.mostrarModalTicket = false;
@@ -158,5 +179,34 @@ export class ListaMedicamentosComponent implements OnInit {
   cerrarSesion() {
     sessionStorage.clear();
     this.router.navigate(['/login']);
+  }
+
+ limpiarMedicamentosSolicitados() {
+    if (this.solicitudesPendientes.length === 0) {
+      Swal.fire('Info', 'La lista ya está vacía', 'info');
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Limpiar historial visual?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33', 
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, limpiar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      
+      if (result.isConfirmed) {
+        this.solicitudesPendientes = [];
+
+        Swal.fire({
+            title: '¡Limpio!',
+            icon: 'success',
+            timer: 1000,
+            showConfirmButton: false
+        });
+      }
+    });
   }
 }
