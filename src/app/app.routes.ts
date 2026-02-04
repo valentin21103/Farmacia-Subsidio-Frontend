@@ -18,7 +18,7 @@ export const routes: Routes = [
 
         {path:  "inicioAdmin", component: AdminDashboardComponent ,canActivate: [authGuard]},
 
-        {path : 'registro', component: RegistroComponent, canActivate: [authGuard]},
+        {path : 'registro', component: RegistroComponent},
   
         {path: "bibliotecaMedi", component: BibliotecaMedicamentosComponent, canActivate: [authGuard]},
 
