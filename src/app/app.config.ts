@@ -2,11 +2,12 @@ import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http'; // <--- 1. Importante
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { customInterceptor } from "./Interceptor/custom.interceptor";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient() // <--- 2. Esto habilita el cliente HTTP en toda la app
+    provideHttpClient(withInterceptors([customInterceptor]))
   ]
 };

@@ -5,6 +5,7 @@ import { RegistroComponent } from './components/registro/registro.component';
 import { BibliotecaMedicamentosComponent } from './components/biblioteca-medicamentos/biblioteca-medicamentos.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 import { BibliotecaUsuariosComponent } from './components/biblioteca-usuarios/biblioteca-usuarios.component';
+import { authGuard } from './Guard/auth.guard';
 
 export const routes: Routes = [
 
@@ -13,15 +14,15 @@ export const routes: Routes = [
         {path : 'login', component: LoginComponent},
 
       // 3. Ruta para ver los medicamentos (a donde iremos después de entrar)
-        { path: 'inicio', component: ListaMedicamentosComponent },
+        { path: 'inicio', component: ListaMedicamentosComponent , canActivate: [authGuard]},
 
-        {path:  "inicioAdmin", component: AdminDashboardComponent},
+        {path:  "inicioAdmin", component: AdminDashboardComponent ,canActivate: [authGuard]},
 
-        {path : 'registro', component: RegistroComponent},
+        {path : 'registro', component: RegistroComponent, canActivate: [authGuard]},
   
-        {path: "bibliotecaMedi", component: BibliotecaMedicamentosComponent},
+        {path: "bibliotecaMedi", component: BibliotecaMedicamentosComponent, canActivate: [authGuard]},
 
-        {path: "bibliotecaUsuario", component: BibliotecaUsuariosComponent},
+        {path: "bibliotecaUsuario", component: BibliotecaUsuariosComponent, canActivate: [authGuard]},
   
          // (Opcional) Si escriben cualquier cosa rara, mandar al Login
 

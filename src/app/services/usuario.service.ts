@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CrearUsuario, LoginDto, Usuario } from '../Interfaces/Login';
+import { CrearUsuario, LoginDto, LoginResponse, Usuario } from '../Interfaces/Login';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -12,8 +12,8 @@ export class UsuarioService {
 
   constructor(private http: HttpClient) { }
 
-  login(credenciales: LoginDto): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.apiUrl}/Login`, credenciales);
+  login(credenciales: LoginDto): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/Login`, credenciales);
   }
 
   registrar(datos: CrearUsuario): Observable<any> {

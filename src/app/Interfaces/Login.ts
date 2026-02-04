@@ -12,6 +12,10 @@ export interface Usuario {
     genero: string;
 }
 
+export interface LoginResponse {
+    token: string;
+}
+
 export interface CrearUsuario {
     nombre: string;
     apellido: string;
